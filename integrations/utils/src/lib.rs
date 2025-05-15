@@ -124,7 +124,6 @@ pub fn html_parts_separated(
                     <meta name="viewport" content="width=device-width, initial-scale=1"/>
                     {head}
                     <link rel="modulepreload" href="{pkg_path}/{output_name}{js_hash}.js"{nonce}>
-                    <link rel="preload" href="{pkg_path}/{wasm_output_name}{wasm_hash}.wasm" as="fetch" type="application/wasm" crossorigin=""{nonce}>
                     <script type="module"{nonce}>
                         function idle(c) {{
                             if ("requestIdleCallback" in window) {{
@@ -134,10 +133,12 @@ pub fn html_parts_separated(
                             }}
                         }}
                         idle(() => {{
+                            setTimeout(()=>{{
                             import('{pkg_path}/{output_name}{js_hash}.js')
                                 .then(mod => {{
                                     mod.default({{module_or_path: '{pkg_path}/{wasm_output_name}{wasm_hash}.wasm'}}).then({import_callback});
                                 }})
+                            }}, 1);
                         }});
                     </script>
                     {leptos_autoreload}
